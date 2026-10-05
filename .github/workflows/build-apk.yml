@@ -7,24 +7,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: MojoLauncher
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Gradle kurulumu
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Build APK
-        run: ./gradlew assembleDebug
+      - name: Gradle Wrapper oluştur
+        run: gradle wrapper
 
-      - name: Upload APK
+      - name: APK oluştur
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: APK'yı yükle
         uses: actions/upload-artifact@v4
         with:
-          name: APK
-          path: '**/build/outputs/apk/**/*.apk'
+          name: MojoLauncher-APK
+          path: MojoLauncher/app/build/outputs/apk/**/*.apk
